@@ -85,6 +85,11 @@
                                 const jsonString = textDecoder.decode(record.data);
                                 // JSONをパース
                                 const jsonData = JSON.parse(jsonString);
+                                if (jsonData.tid) {
+                                    checkListItem(jsonData.tid);
+                                } else {
+                                    log.textContent = "> JSON内にIDが見つかりませんでした。";
+                                }
                             } catch (error) {
                                 log.textContent = `> JSONの処理中にエラーが発生しました: ${error}`;
                             }
