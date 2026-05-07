@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web NFC チェックリスト</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: 2em auto;
+            padding: 0 1em;
+        }
+
+        #scanButton {
+            display: block;
+            width: 100%;
+            padding: 1em;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-bottom: 1em;
+        }
+
+        #checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        #checklist li {
+            font-size: 1.2em;
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            margin-bottom: 0.5em;
+            border-radius: 5px;
+        }
+
+        #checklist input[type="checkbox"] {
+            margin-right: 0.5em;
+        }
+
+        input[type="checkbox"]:checked+label {
+            color: red;
+            /* チェックされた時に赤色に変わる */
+        }
+
+        #log {
+            margin-top: 1em;
+            padding: 0.5em;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>お出かけ前のチェックリスト</h1>
+    <p>下のボタンを押して、NFCタグをデバイスにタップしてください。</p>
+
+    <button id="scanButton">お出かけ前チェック開始</button>
+
+    <ul id="checklist">
+        <li data-id="reizouko">
+            <input type="checkbox" id="checkbox-1" disabled>
+            <label for="checkbox-1">冷蔵庫の中身</label>
+        </li>
+        <li data-id="gas-stove">
+            <input type="checkbox" id="checkbox-2" disabled>
+            <label for="checkbox-2">ガスコンロの元栓</label>
+        </li>
+        <li data-id="room-lamp">
+            <input type="checkbox" id="checkbox-3" disabled>
+            <label for="checkbox-3">部屋の電気</label>
+        </li>
+    </ul>
+
+    <div id="log"></div>
+
+    <script>
+        const scanButton = document.getElementById('scanButton');
+        const log = document.getElementById('log');
+
+        scanButton.addEventListener('click', async () => {
+            log.textContent = "NFCタグを待機中です...";
+
+            if (!('NDEFReader' in window)) {
+                log.textContent = "このブラウザはWeb NFCに対応していません。";
+                return;
+            }
+
+            try {
+                const ndef = new NDEFReader();
+                await ndef.scan();
+                log.textContent = "> スキャンを開始しました。タグをタップしてください。";
+
+                ndef.addEventListener('reading', ({ message }) => {
+                    log.textContent = "> NFCタグを読み取りました。";
+
+                    // NDEFメッセージ内の各レコードを処理
+                    for (const record of message.records) {
+                        if (record.recordType === "mime" && record.mediaType === "application/json") {
+                            try {
+                                // DataViewを文字列にデコード
+                                const textDecoder = new TextDecoder();
+                                const jsonString = textDecoder.decode(record.data);
+
+                                // JSONをパース
+                                const jsonData = JSON.parse(jsonString);
+
+                                if (jsonData.tid) {
+                                    log.textContent = `> 取得したTAG ID: ${jsonData.tid}`;
+                                    // 対応するリストのチェックボックスをオンにする
+                                    checkListItem(jsonData.tid);
+                                } else {
+                                    log.textContent = "> JSON内にIDが見つかりませんでした。";
+                                }
+
+                            } catch (error) {
+                                log.textContent = `> JSONの処理中にエラーが発生しました: ${error}`;
+                            }
+                        }
+                    }
+                });
+
+                ndef.addEventListener('readingerror', () => {
+                    log.textContent = "NFCタグの読み取りに失敗しました。";
+                });
+
+            } catch (error) {
+                log.textContent = `> スキャン開始時にエラーが発生しました: ${error}`;
+            }
+        });
+
+        function checkListItem(tid) {
+            // data-id属性が一致するli要素を検索
+            const listItem = document.querySelector(`#checklist li[data-id="${tid}"]`);
+            if (listItem) {
+                // li要素内のチェックボックスを取得
+                const checkbox = listItem.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.checked = true;
+                    log.textContent += ` - 「${listItem.textContent.trim()}」をチェックしました。`;
+                }
+            } else {
+                log.textContent += ` - TAG ID「${tid}」に一致するアイテムは見つかりませんでした。`;
+            }
+        }
+    </script>
+</body>
+
+</html>
