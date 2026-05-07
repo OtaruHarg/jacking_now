@@ -122,7 +122,6 @@
                 ndef.addEventListener('readingerror', () => {
                     log.textContent = "NFCタグの読み取りに失敗しました。";
                 });
-
             } catch (error) {
                 log.textContent = `> スキャン開始時にエラーが発生しました: ${error}`;
             }
