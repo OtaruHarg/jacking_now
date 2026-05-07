@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,15 +10,6 @@
             max-width: 600px;
             margin: 2em auto;
             padding: 0 1em;
-        }
-
-        #scanButton {
-            display: block;
-            width: 100%;
-            padding: 1em;
-            font-size: 1.2em;
-            cursor: pointer;
-            margin-bottom: 1em;
         }
 
         #checklist {
@@ -59,13 +49,12 @@
             height: 20vw;
             width: 20vw;
             z-index: 10;
+            background-color: #ddd;
+            display: block;
         }
     </style>
 </head>
-
 <body>
-    <h1>お出かけ前のチェックリスト</h1>
-    <p>下のボタンを押して、NFCタグをデバイスにタップしてください。</p>
     <div class="eria_buttom">
         <button id="scanButton">お出かけ前チェック開始</button>
     </div>
