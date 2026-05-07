@@ -104,12 +104,6 @@
             // data-id属性が一致するli要素を検索
             const listItem = document.querySelector(`#checklist li[data-id="${tid}"]`);
             if (listItem) {
-                // li要素内のチェックボックスを取得
-                const checkbox = listItem.querySelector('input[type="checkbox"]');
-                if (checkbox) {
-                    checkbox.checked = true;
-                    log.textContent += ` - 「${listItem.textContent.trim()}」をチェックしました。`;
-                }
             } else {
                 log.textContent += `ERROR NOT FOUND`;
             }
