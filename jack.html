@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>ジャックされました</title>
+    </head>
+    <body>
+        <style>
+            body{
+                background-color: black;
+                height: 100vh;
+                width: 100vw;
+                margin: 0;
+                padding: 0;
+            }
+            .jacking{
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: yellow;
+                height: 100vh;
+                width: 100vw;
+            }
+        </style>
+        <div class="jacking">
+            <h1>ジャック中</h1>
+        </div>
+        <script>
+            var finish;
+            window.onload = load();
+            function load(){
+                history.pushState(null, null, null);
+                setTimeout(() => {
+                    mainloops();
+                }, 3000);
+            }
+            function mainloops(){
+                while(!finish){
+                    result = window.prompt("ジャックされました。解除キーを入力してください。");
+                    if(result == "粉バナナ"){
+                        finish = "true";
+                    }
+            window.addEventListener('popstate', function (e) {
+                history.pushState(null, null, null);
+                alert('このページから戻ることはできません。');
+            });
+                }
+            }
+        </script>
+    </body>
+</html>
