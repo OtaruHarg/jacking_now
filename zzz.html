@@ -80,7 +80,7 @@
     <script>
         const scanButton = document.getElementById('scanButton');
         const log = document.getElementById('log');
-        function eria_button(){
+        async function eria_button(){
             log.textContent = "NFCタグを待機中です...";
             if (!('NDEFReader' in window)) {
                 log.textContent = "このブラウザはWeb NFCに対応していません。";
