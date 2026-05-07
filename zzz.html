@@ -77,20 +77,16 @@
     <script>
         const scanButton = document.getElementById('scanButton');
         const log = document.getElementById('log');
-
-        scanButton.addEventListener('click', async () => {
+        function eria_button(){
             log.textContent = "NFCタグを待機中です...";
-
             if (!('NDEFReader' in window)) {
                 log.textContent = "このブラウザはWeb NFCに対応していません。";
                 return;
             }
-
             try {
                 const ndef = new NDEFReader();
                 await ndef.scan();
                 log.textContent = "> スキャンを開始しました。タグをタップしてください。";
-
                 ndef.addEventListener('reading', ({ message }) => {
                     log.textContent = "> NFCタグを読み取りました。";
 
@@ -127,7 +123,7 @@
             } catch (error) {
                 log.textContent = `> スキャン開始時にエラーが発生しました: ${error}`;
             }
-        });
+        };
 
         function checkListItem(tid) {
             // data-id属性が一致するli要素を検索
